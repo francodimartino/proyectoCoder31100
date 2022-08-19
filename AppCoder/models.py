@@ -21,3 +21,6 @@ class Entregable(models.Model):
     nombre= models.CharField(max_length=50)
     fecha_entrega= models.DateField()
     entregado= models.BooleanField()
+
+
+    #comienzo clase 19
