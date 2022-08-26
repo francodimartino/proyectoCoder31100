@@ -1,0 +1,27 @@
+{% extends "AppCoder/padre.html" %}
+
+{% load static %}
+
+
+{% block titulo_de_pagina %}
+<h1 class="mb-5">ESTE TITULO VIENE DE INICIO</h1>
+{% endblock %}
+
+
+{% block contenido_que_cambia %}
+
+<h1>buscamos curso por comision!</h1>
+
+
+<form action="{% url 'buscar' %}" method="GET"> {% csrf_token %}
+
+<p>comision:<input type="number" name="comision", id="comision"></p>
+
+
+<input type="submit", value="Buscar">
+
+</form>
+
+<h2 >{{ mensaje }}</h2>
+
+{% endblock %}

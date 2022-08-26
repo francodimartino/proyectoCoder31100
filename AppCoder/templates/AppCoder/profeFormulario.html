@@ -9,9 +9,16 @@
 
 
 {% block contenido_que_cambia %}
+<h1>FORMULARIO DE PROFES!</h1>
+<form action="{% url 'profeFormulario' %}" method="POST"> {% csrf_token %}
 
-<h1>ESTE ES EL CONTENIDO QUE CAMBIO!</h1>
+<table>
 
-<h2>{{ mensaje }}</h2>
+    {{ formulario.as_table }}
+</table>
+
+<input type="submit", value="Enviar">
+
+</form>
 
 {% endblock %}

@@ -10,8 +10,27 @@
 
 {% block contenido_que_cambia %}
 
-<h1>ESTE ES EL CONTENIDO QUE CAMBIO!</h1>
-
+{% if mensaje %}
 <h2>{{ mensaje }}</h2>
+
+{% else %}
+
+
+<h1>resultados busqueda</h1>
+
+{% for curso in cursos %}
+
+<h2>{{ curso.nombre }}</h2>
+<h2>{{ curso.comision }}</h2>
+--
+
+{% endfor %}
+
+{% endif %}
+
+{% endblock %}
+{% block scripts %}
+
+
 
 {% endblock %}

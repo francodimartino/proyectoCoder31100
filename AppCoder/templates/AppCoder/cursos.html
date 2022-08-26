@@ -4,19 +4,21 @@
 
 
 {% block titulo_de_pagina %}
-<h1 class="mb-5">CURSOS!!</h1>
+<h1 class="mb-5">ESTE TITULO VIENE DE INICIO</h1>
 {% endblock %}
 
 
 {% block contenido_que_cambia %}
 
-<h1>ESTE ES EL CONTENIDO DE CURSOS!</h1>
+<form action="{% url 'cursos' %}" method="POST"> {% csrf_token %}
 
-{% for curso in listita %}
+<table>
 
-<h1>{{ curso }}</h1>
+    {{ formulario.as_table }}
+</table>
 
-{% endfor %}
+<input type="submit", value="Enviar">
 
+</form>
 
 {% endblock %}
