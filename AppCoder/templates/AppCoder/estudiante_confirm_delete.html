@@ -1,0 +1,20 @@
+{% extends "AppCoder/padre.html" %}
+
+{% load static %}
+
+
+{% block titulo_de_pagina %}
+<h1 class="mb-5">ESTE TITULO VIENE DE INICIO</h1>
+{% endblock %}
+
+
+{% block contenido_que_cambia %}
+<h1>FORMULARIO DE ESTUDIANTES!</h1>
+
+<form method="post">{% csrf_token %}
+    estas seguro que deseas borrar el estudiante "{{ object }}"?
+    <input type="submit" value="SI">
+
+</form>
+
+{% endblock %}

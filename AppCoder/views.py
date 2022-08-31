@@ -1,7 +1,9 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from .models import Curso, Profesor
+from .models import Curso, Profesor, Estudiante
 from AppCoder.forms import CursoFormulario, ProfeForm
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
 
 # Create your views here.
 
@@ -103,3 +105,74 @@ def buscar(request):
     else:
         return render(request, "Appcoder/busquedaComision.html", {"mensaje": "No enviaste datos!"})
     
+
+
+    #    leer profesores
+
+def leerProfesores(request):
+    profesores=Profesor.objects.all()
+    print(profesores)
+    return render(request, "Appcoder/leerProfesores.html", {"profesores":profesores})
+
+
+# eliminar profesor
+
+def eliminarProfesor(request, id):
+    profe=Profesor.objects.get(id=id)
+    profe.delete()
+    profesores=Profesor.objects.all()
+    return render(request, "Appcoder/leerProfesores.html", {"profesores":profesores})
+
+# editar profesor
+
+def editarProfesor(request, id):
+    #traer el profesor
+    profe=Profesor.objects.get(id=id)
+    if request.method=="POST":
+        #el form viene lleno, con los datos a cambiar
+        form=ProfeForm(request.POST)
+        if form.is_valid():
+            #cambio los datos
+            info=form.cleaned_data
+            profe.nombre=info["nombre"]
+            profe.apellido=info["apellido"]
+            profe.email=info["email"]
+            profe.profesion=info["profesion"]
+            #guardo el profe 
+            profe.save()
+            #vuelvo a la vista del listado para ver el cambio
+            profesores=Profesor.objects.all()
+            return render(request, "Appcoder/leerProfesores.html", {"profesores":profesores})
+    else:
+        form= ProfeForm(initial={"nombre":profe.nombre, "apellido":profe.apellido, "email":profe.email, "profesion":profe.profesion})
+        return render(request, "Appcoder/editarProfesor.html", {"formulario":form, "nombre_profesor":profe.nombre, "id":profe.id})
+    
+    
+
+###############################################################################################
+#vistas basadas en clases para estudiantes
+
+class EstudianteList(ListView):
+    model=Estudiante
+    template_name="Appcoder/leerEstudiantes.html"
+
+class EstudianteDetalle(DetailView):
+    model=Estudiante
+    template_name="Appcoder/estudiante_detalle.html"
+
+class EstudianteCreacion(CreateView):
+    model = Estudiante
+    success_url = reverse_lazy('estudiante_listar')
+    fields=['nombre', 'apellido', 'email']
+
+class EstudianteUpdate(UpdateView):
+    model = Estudiante
+    success_url = reverse_lazy('estudiante_listar')
+    fields=['nombre', 'apellido', 'email']
+
+class EstudianteDelete(DeleteView):
+    model = Estudiante
+    success_url = reverse_lazy('estudiante_listar')
+
+
+

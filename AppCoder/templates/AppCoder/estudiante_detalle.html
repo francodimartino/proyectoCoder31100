@@ -1,0 +1,27 @@
+{% extends "AppCoder/padre.html" %}
+
+{% load static %}
+
+
+{% block titulo_de_pagina %}
+<h1 class="mb-5">LISTADO DE ESTUDIANTES!</h1>
+{% endblock %}
+
+
+{% block contenido_que_cambia %}
+
+
+
+<p>NOMBRE : <i>{{estudiante.nombre}}</i></p>
+<p>APELLIDO : <i>{{estudiante.apellido}}</i></p>
+<p>EMAIL : <i>{{estudiante.email}}</i></p>
+
+
+
+
+{% endblock %}
+{% block scripts %}
+
+
+
+{% endblock %}

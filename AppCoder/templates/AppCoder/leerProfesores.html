@@ -1,0 +1,41 @@
+{% extends "AppCoder/padre.html" %}
+
+{% load static %}
+
+
+{% block titulo_de_pagina %}
+<h1 class="mb-5">LISTADO DE PROFESORES!</h1>
+{% endblock %}
+
+
+{% block contenido_que_cambia %}
+
+{% if mensaje %}
+<h2>{{ mensaje }}</h2>
+
+{% else %}
+
+
+<h1>LISTADO DE PROFES</h1>
+
+{% for profe in profesores %}
+
+<h4>{{ profe.apellido }}, {{ profe.nombre }} - {{ profe.profesion }}</h4>
+<button>
+    <a href="{% url 'eliminarProfesor' profe.id %}">ELIMINAR</a>
+    <a href="{% url 'editarProfesor' profe.id %}">EDITAR</a>
+</button>
+
+
+
+{% endfor %}
+
+{% endif %}
+<a class="btn btn-success" href="{% url 'profeFormulario' %}">Agregar Profesor</a>
+
+{% endblock %}
+{% block scripts %}
+
+
+
+{% endblock %}
