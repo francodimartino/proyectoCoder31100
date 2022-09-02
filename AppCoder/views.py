@@ -1,9 +1,20 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from .models import Curso, Profesor, Estudiante
-from AppCoder.forms import CursoFormulario, ProfeForm
+from AppCoder.forms import CursoFormulario, ProfeForm, UserRegisterForm
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+
+
+
+
+#imports para login
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+
 
 # Create your views here.
 
@@ -19,7 +30,7 @@ def curso(request):
 
 
 
-
+@login_required
 def inicio(request):
     return render (request, "Appcoder/inicio.html")
 
@@ -49,7 +60,7 @@ view para formulario a mano!
         return render(request, "Appcoder/inicio.html")
     return render(request, "Appcoder/cursoFormulario.html") """
 
-
+@login_required
 def cursos(request):
 
     if request.method=="POST":
@@ -152,11 +163,11 @@ def editarProfesor(request, id):
 ###############################################################################################
 #vistas basadas en clases para estudiantes
 
-class EstudianteList(ListView):
+class EstudianteList(LoginRequiredMixin, ListView):
     model=Estudiante
     template_name="Appcoder/leerEstudiantes.html"
 
-class EstudianteDetalle(DetailView):
+class EstudianteDetalle(LoginRequiredMixin, DetailView):
     model=Estudiante
     template_name="Appcoder/estudiante_detalle.html"
 
@@ -176,3 +187,41 @@ class EstudianteDelete(DeleteView):
 
 
 
+#----- Login, logout y registro de usuarios
+
+
+def login_request(request):
+    if request.method=="POST":
+        form = AuthenticationForm(request, data=request.POST )
+        if form.is_valid():
+            usu=request.POST["username"]
+            clave=request.POST["password"]
+
+            usuario=authenticate(username=usu, password=clave)
+            if usuario is not None:
+                login(request, usuario)
+                return render(request, 'AppCoder/inicio.html', {'mensaje':f"Bienvenido {usuario}"})
+            else:
+                return render(request, 'AppCoder/login.html', {"form":form, 'mensaje':'Usuario o contraseña incorrectos'})
+        else:
+            return render(request, 'AppCoder/login.html', {"form":form, 'mensaje':'Usuario o contraseña incorrectos'})
+    else:
+        form=AuthenticationForm()
+        return render(request, 'AppCoder/login.html', {'form':form})
+
+
+def register(request):
+    if request.method=="POST":
+        form= UserRegisterForm(request.POST)
+        if form.is_valid():
+            username=form.cleaned_data["username"]
+            #podriamos fijarnos que no exista un user en la bd con ese nombre
+
+            form.save()
+            return render(request, 'AppCoder/inicio.html', {'mensaje':f"Usuario {username} creado"})
+    else:
+        form=UserRegisterForm()
+    return render(request, 'AppCoder/register.html', {'form':form})
+
+        
+        
