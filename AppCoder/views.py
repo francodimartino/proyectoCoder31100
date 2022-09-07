@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from .models import Curso, Profesor, Estudiante
-from AppCoder.forms import CursoFormulario, ProfeForm, UserRegisterForm
+from AppCoder.forms import CursoFormulario, ProfeForm, UserRegisterForm, UserEditForm
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 
@@ -224,4 +224,14 @@ def register(request):
     return render(request, 'AppCoder/register.html', {'form':form})
 
         
-        
+@login_required        
+def editarPerfil(request):
+    usuario=request.user
+    if request.method=="POST":
+        form= UserEditForm(request.POST, instance=usuario)
+        if form.is_valid():
+            form.save()
+            return render(request, 'AppCoder/inicio.html', {'mensaje':f"Perfil de {usuario} editado"})
+    else:
+        form= UserEditForm(instance=usuario)
+    return render(request, 'AppCoder/editarPerfil.html', {'form':form, 'usuario':usuario})

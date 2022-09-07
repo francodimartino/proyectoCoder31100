@@ -1,0 +1,21 @@
+{% extends "AppCoder/padre.html" %}
+
+{% load static %}
+
+
+{% block titulo_de_pagina %}
+<h1 class="mb-5">EDICION DE PERFIL DE {{ usuario }}</h1>
+{% endblock %}
+
+
+{% block contenido_que_cambia %}
+<h1>FORMULARIO DE EDICION DE PERFIL</h1>
+<h1>{{ mensaje }}</h1>
+<form action="{% url 'register' %}"  method="POST"> {% csrf_token %}
+
+    {{ form.as_p }}
+    <button type="submit">GUARDAR CAMBIOS</button>
+
+</form>
+
+{% endblock %}
