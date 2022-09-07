@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from .models import Curso, Profesor, Estudiante
-from AppCoder.forms import CursoFormulario, ProfeForm, UserRegisterForm, UserEditForm
+from .models import Curso, Profesor, Estudiante, Avatar
+from AppCoder.forms import CursoFormulario, ProfeForm, UserRegisterForm, UserEditForm, AvatarForm
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 
@@ -32,7 +32,7 @@ def curso(request):
 
 @login_required
 def inicio(request):
-    return render (request, "Appcoder/inicio.html")
+    return render (request, "Appcoder/inicio.html",  {"imagen":obtenerAvatar(request)})
 
 
 
@@ -79,7 +79,10 @@ def cursos(request):
     
     else:
         miFormulario=CursoFormulario()
-        return render(request, "Appcoder/cursos.html", {"formulario":miFormulario})
+        #con esto traigo el AVATAR de la base
+        
+        
+        return render(request, "Appcoder/cursos.html", {"formulario":miFormulario, "imagen":obtenerAvatar(request)})
      
 
 def profeFormulario(request):
@@ -228,10 +231,47 @@ def register(request):
 def editarPerfil(request):
     usuario=request.user
     if request.method=="POST":
-        form= UserEditForm(request.POST, instance=usuario)
+        form= UserEditForm(request.POST)
         if form.is_valid():
-            form.save()
+            usuario.first_name=form.cleaned_data["first_name"]
+            usuario.last_name=form.cleaned_data["last_name"]
+            usuario.email=form.cleaned_data["email"]
+            usuario.password1=form.cleaned_data["password1"]
+            usuario.password2=form.cleaned_data["password2"]
+            usuario.save()
             return render(request, 'AppCoder/inicio.html', {'mensaje':f"Perfil de {usuario} editado"})
     else:
         form= UserEditForm(instance=usuario)
     return render(request, 'AppCoder/editarPerfil.html', {'form':form, 'usuario':usuario})
+
+
+
+def agregarAvatar(request):
+    if request.method == 'POST':
+        formulario=AvatarForm(request.POST, request.FILES)
+        if formulario.is_valid():
+            avatarViejo=Avatar.objects.filter(user=request.user)
+            if(len(avatarViejo)>0):
+                avatarViejo.delete()
+            avatar=Avatar(user=request.user, imagen=formulario.cleaned_data['imagen'])
+            avatar.save()
+            return render(request, 'AppCoder/inicio.html', {'usuario':request.user, 'mensaje':'AVATAR AGREGADO EXITOSAMENTE', "imagen":obtenerAvatar(request)})
+    else:
+        formulario=AvatarForm()
+    return render(request, 'AppCoder/agregarAvatar.html', {'form':formulario, 'usuario':request.user, "imagen":obtenerAvatar(request)})
+
+
+
+
+
+#####funcion que trae la url del avatar###
+def obtenerAvatar(request):
+    lista=Avatar.objects.filter(user=request.user)
+    if len(lista)!=0:
+        imagen=lista[0].imagen.url
+    else:
+        imagen=""
+    return imagen
+
+
+######

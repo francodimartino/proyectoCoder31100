@@ -27,7 +27,14 @@
                 <a class="btn btn-success" href="{% url 'estudiantes' %}">Estudiantes</a>
                 <a class="btn btn-warning" href="{% url 'cursos' %}">Cursos</a>
                 <a class="btn btn-light" href="{% url 'entregables' %}">Entregables</a>
-                <a class="btn btn-primary" href="#">Registrate!</a>
+                {% if not request.user.is_authenticated %}
+                <a class="btn btn-primary" href="{% url 'login' %}">Inicia Sesion!</a>
+                <a class="btn btn-primary" href="{% url 'register' %}">Registrate!</a>
+                {% else %}
+                <p>Hola! {{ user.username }}</p>
+                <img src="{{ imagen }}" alt="">
+                <a class="btn btn-primary" href="{% url 'logout' %}">Cerrar Sesion</a>
+                {% endif %}
             </div>
         </nav>
         <!-- Masthead-->

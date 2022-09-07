@@ -11,7 +11,7 @@
 {% block contenido_que_cambia %}
 <h1>FORMULARIO DE EDICION DE PERFIL</h1>
 <h1>{{ mensaje }}</h1>
-<form action="{% url 'register' %}"  method="POST"> {% csrf_token %}
+<form action="{% url 'editarPerfil' %}"  method="POST"> {% csrf_token %}
 
     {{ form.as_p }}
     <button type="submit">GUARDAR CAMBIOS</button>
